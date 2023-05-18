@@ -771,7 +771,7 @@ function terminator(callback)
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMessageCard = void 0;
-function createMessageCard(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp) {
+function createMessageCard(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp, subMessage) {
     let avatar_url = 'https://www.gravatar.com/avatar/05b6d8cc7c662bf81e01b39254f88a48?d=identicon';
     if (author) {
         if (author.avatar_url) {
@@ -788,7 +788,7 @@ function createMessageCard(notificationSummary, notificationColor, commit, autho
             {
                 activityTitle: `**CI #${runNum} (commit ${sha.substr(0, 7)})** on [${repoName}](${repoUrl})`,
                 activityImage: avatar_url,
-                activitySubtitle: `by ${commit.data.commit.author.name} [(@${author.login})](${author.html_url}) on ${timestamp}`
+                activitySubtitle: `by ${commit.data.commit.author.name} [(@${author.login})](${author.html_url}) on ${timestamp} ${subMessage.length > 0 ? "\n deployed : " + subMessage : ''}`
             }
         ],
         potentialAction: [
@@ -1765,6 +1765,7 @@ function run() {
                 required: true
             });
             const notificationSummary = core.getInput('notification-summary') || 'GitHub Action Notification';
+            const subMessage = core.getInput('notification-sub-message') || '';
             const notificationColor = core.getInput('notification-color') || '0b93ff';
             const timezone = core.getInput('timezone') || 'UTC';
             const timestamp = (0, moment_timezone_1.default)()
@@ -1780,7 +1781,7 @@ function run() {
             const octokit = new rest_1.Octokit({ auth: `token ${githubToken}` });
             const commit = yield octokit.repos.getCommit(params);
             const author = commit.data.author;
-            const messageCard = yield (0, message_card_1.createMessageCard)(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp);
+            const messageCard = yield (0, message_card_1.createMessageCard)(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp, subMessage);
             console.log(messageCard);
             axios_1.default
                 .post(msTeamsWebhookUri, messageCard)
