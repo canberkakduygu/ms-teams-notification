@@ -23,6 +23,9 @@ async function run(): Promise<void> {
 
     const notificationSummary =
       core.getInput('notification-summary') || 'GitHub Action Notification'
+
+    const subMessage = core.getInput('notification-sub-message') || ''
+
     const notificationColor = core.getInput('notification-color') || '0b93ff'
     const timezone = core.getInput('timezone') || 'UTC'
 
@@ -52,7 +55,8 @@ async function run(): Promise<void> {
       repoName,
       sha,
       repoUrl,
-      timestamp
+      timestamp,
+      subMessage
     )
 
     console.log(messageCard)
