@@ -26,6 +26,7 @@
     "@actions/core": "^1.10.0",
     "@octokit/graphql": "^5.0.4",
     "@octokit/rest": "^19.0.5",
+    "@vercel/ncc": "^0.38.1",
     "axios": "^1.2.1",
     "moment-timezone": "^0.5.39-2022f",
     "octokit": "^2.0.10"
@@ -35,7 +36,6 @@
     "@types/moment-timezone": "^0.5.30",
     "@types/node": "^16.11.7",
     "@typescript-eslint/parser": "^5.47.0",
-    "@zeit/ncc": "^0.20.5",
     "eslint": "^8.30.0",
     "eslint-plugin-github": "^4.6.0",
     "eslint-plugin-jest": "^27.1.7",
