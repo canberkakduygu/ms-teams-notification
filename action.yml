@@ -23,6 +23,9 @@ inputs:
   notification-sub-message:
     description: 'description of message'
     required: false
+  adaptive-card-message:
+    description: 'Use New Adaptive Cards Message Template'
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'
