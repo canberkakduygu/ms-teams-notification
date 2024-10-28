@@ -46,7 +46,8 @@ async function run(): Promise<void> {
     const author = commit.data.author
 
     const useAdaptiveCard: boolean = core.getInput('adaptive-card-message') === 'true'
- 
+    console.log('useAdaptiveCard', useAdaptiveCard);
+    
     let messageCard;
 
     if (useAdaptiveCard){
