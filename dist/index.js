@@ -80,7 +80,6 @@ function run() {
             const commit = yield octokit.repos.getCommit(params);
             const author = commit.data.author;
             const useAdaptiveCard = core.getInput('adaptive-card-message') === 'true';
-            console.log('useAdaptiveCard', useAdaptiveCard);
             let messageCard;
             if (useAdaptiveCard) {
                 messageCard = yield (0, message_card_1.createAdaptiveCard)(notificationSummary, commit, runId, repoUrl);
@@ -157,49 +156,49 @@ function createMessageCard(notificationSummary, notificationColor, commit, autho
 exports.createMessageCard = createMessageCard;
 function createAdaptiveCard(notificationSummary, commit, runId, repoUrl) {
     return {
-        "type": "message",
-        "attachments": [
+        type: 'message',
+        attachments: [
             {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.3",
-                    "body": [
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                    type: 'AdaptiveCard',
+                    version: '1.3',
+                    body: [
                         {
-                            "type": "Container",
-                            "items": [
+                            type: 'Container',
+                            items: [
                                 {
-                                    "type": "TextBlock",
-                                    "size": "Large",
-                                    "weight": "Bolder",
-                                    "text": notificationSummary,
-                                    "color": "Attention",
-                                    "horizontalAlignment": "Left"
+                                    type: 'TextBlock',
+                                    size: 'Large',
+                                    weight: 'Bolder',
+                                    text: notificationSummary,
+                                    color: 'Attention',
+                                    horizontalAlignment: 'Left'
                                 }
                             ]
                         }
                     ],
-                    "msteams": {
-                        "width": "Full"
+                    msteams: {
+                        width: 'Full'
                     },
-                    "actions": [
+                    actions: [
                         {
-                            "type": "Action.OpenUrl",
-                            "title": "View Workflow Run",
-                            "url": `${repoUrl}/actions/runs/${runId}`
+                            type: 'Action.OpenUrl',
+                            title: 'View Workflow Run',
+                            url: `${repoUrl}/actions/runs/${runId}`
                         },
                         {
-                            "type": "Action.OpenUrl",
-                            "title": "View Commit Changes",
-                            "url": commit.data.html_url
+                            type: 'Action.OpenUrl',
+                            title: 'View Commit Changes',
+                            url: commit.data.html_url
                         }
                     ]
                 }
             }
         ],
-        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-        "version": "1.3"
+        $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+        version: '1.3'
     };
 }
 exports.createAdaptiveCard = createAdaptiveCard;
