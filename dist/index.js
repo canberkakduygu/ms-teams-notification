@@ -79,7 +79,15 @@ function run() {
             const octokit = new rest_1.Octokit({ auth: `token ${githubToken}` });
             const commit = yield octokit.repos.getCommit(params);
             const author = commit.data.author;
-            const messageCard = yield (0, message_card_1.createMessageCard)(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp, subMessage);
+            const useAdaptiveCard = core.getInput('adaptive-card-message') === 'true';
+            console.log('useAdaptiveCard', useAdaptiveCard);
+            let messageCard;
+            if (useAdaptiveCard) {
+                messageCard = yield (0, message_card_1.createAdaptiveCard)(notificationSummary, commit, runId, repoUrl);
+            }
+            else {
+                messageCard = yield (0, message_card_1.createMessageCard)(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp, subMessage);
+            }
             console.log(messageCard);
             axios_1.default
                 .post(msTeamsWebhookUri, messageCard)
@@ -108,7 +116,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createMessageCard = void 0;
+exports.createAdaptiveCard = exports.createMessageCard = void 0;
 function createMessageCard(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp, subMessage) {
     let avatar_url = 'https://www.gravatar.com/avatar/05b6d8cc7c662bf81e01b39254f88a48?d=identicon';
     if (author) {
@@ -147,6 +155,54 @@ function createMessageCard(notificationSummary, notificationColor, commit, autho
     return messageCard;
 }
 exports.createMessageCard = createMessageCard;
+function createAdaptiveCard(notificationSummary, commit, runId, repoUrl) {
+    return {
+        "type": "message",
+        "attachments": [
+            {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.3",
+                    "body": [
+                        {
+                            "type": "Container",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "size": "Large",
+                                    "weight": "Bolder",
+                                    "text": notificationSummary,
+                                    "color": "Attention",
+                                    "horizontalAlignment": "Left"
+                                }
+                            ]
+                        }
+                    ],
+                    "msteams": {
+                        "width": "Full"
+                    },
+                    "actions": [
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "View Workflow Run",
+                            "url": `${repoUrl}/actions/runs/${runId}`
+                        },
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "View Commit Changes",
+                            "url": commit.data.html_url
+                        }
+                    ]
+                }
+            }
+        ],
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "version": "1.3"
+    };
+}
+exports.createAdaptiveCard = createAdaptiveCard;
 
 
 /***/ }),

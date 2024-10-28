@@ -45,20 +45,20 @@ async function run(): Promise<void> {
     const commit = await octokit.repos.getCommit(params)
     const author = commit.data.author
 
-    const useAdaptiveCard: boolean = core.getInput('adaptive-card-message') === 'true'
-    console.log('useAdaptiveCard', useAdaptiveCard);
-    
-    let messageCard;
+    const useAdaptiveCard: boolean =
+      core.getInput('adaptive-card-message') === 'true'
+    console.log('useAdaptiveCard', useAdaptiveCard)
 
-    if (useAdaptiveCard){
+    let messageCard
+
+    if (useAdaptiveCard) {
       messageCard = await createAdaptiveCard(
         notificationSummary,
         commit,
         runId,
         repoUrl
       )
-    }
-    else {
+    } else {
       messageCard = await createMessageCard(
         notificationSummary,
         notificationColor,
