@@ -24,7 +24,7 @@ inputs:
     description: 'description of message'
     required: false
   adaptive-card-message:
-    description: 'Use New Adaptive Cards Message Template'
+    description: 'Use New Adaptive Card Message Template'
     required: false
 runs:
   using: 'node20'
