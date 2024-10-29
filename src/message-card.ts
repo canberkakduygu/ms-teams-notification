@@ -55,3 +55,56 @@ export function createMessageCard(
   }
   return messageCard
 }
+
+export function createAdaptiveCard(
+  notificationSummary: string,
+  commit: any,
+  runId: string,
+  repoUrl: string
+): any {
+  return {
+    type: 'message',
+    attachments: [
+      {
+        contentType: 'application/vnd.microsoft.card.adaptive',
+        content: {
+          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+          type: 'AdaptiveCard',
+          version: '1.3',
+          body: [
+            {
+              type: 'Container',
+              items: [
+                {
+                  type: 'TextBlock',
+                  size: 'Large',
+                  weight: 'Bolder',
+                  text: notificationSummary,
+                  color: 'Attention',
+                  horizontalAlignment: 'Left'
+                }
+              ]
+            }
+          ],
+          msteams: {
+            width: 'Full'
+          },
+          actions: [
+            {
+              type: 'Action.OpenUrl',
+              title: 'View Workflow Run',
+              url: `${repoUrl}/actions/runs/${runId}`
+            },
+            {
+              type: 'Action.OpenUrl',
+              title: 'View Commit Changes',
+              url: commit.data.html_url
+            }
+          ]
+        }
+      }
+    ],
+    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+    version: '1.3'
+  }
+}

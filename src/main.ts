@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import {Octokit} from '@octokit/rest'
 import axios from 'axios'
 import moment from 'moment-timezone'
-import {createMessageCard} from './message-card'
+import {createMessageCard, createAdaptiveCard} from './message-card'
 
 const escapeMarkdownTokens = (text: string) =>
   text
@@ -45,19 +45,33 @@ async function run(): Promise<void> {
     const commit = await octokit.repos.getCommit(params)
     const author = commit.data.author
 
-    const messageCard = await createMessageCard(
-      notificationSummary,
-      notificationColor,
-      commit,
-      author,
-      runNum,
-      runId,
-      repoName,
-      sha,
-      repoUrl,
-      timestamp,
-      subMessage
-    )
+    const useAdaptiveCard: boolean =
+      core.getInput('adaptive-card-message') === 'true'
+
+    let messageCard
+
+    if (useAdaptiveCard) {
+      messageCard = await createAdaptiveCard(
+        notificationSummary,
+        commit,
+        runId,
+        repoUrl
+      )
+    } else {
+      messageCard = await createMessageCard(
+        notificationSummary,
+        notificationColor,
+        commit,
+        author,
+        runNum,
+        runId,
+        repoName,
+        sha,
+        repoUrl,
+        timestamp,
+        subMessage
+      )
+    }
 
     console.log(messageCard)
 
